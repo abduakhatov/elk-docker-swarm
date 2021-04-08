@@ -25,9 +25,8 @@ services:
       # - --docker.exposedbydefault=false
       # - --accessLog
     networks:
-      - traefik-public
       - elastic-network
-    # ports:
+#    ports:
       # - "80:80"
       # - "443:443"
       # - "8080:8080"
@@ -43,9 +42,9 @@ services:
       labels: 
         # Enable Traefik for this service, to make it available in the public network
         - traefik.enable=true
-        # Use the traefik-public network (declared below)
-        - traefik.docker.network=traefik-public
-        # Use the custom label "traefik.constraint-label=traefik-public"
+        # Use the elastic-network network (declared below)
+        - traefik.docker.network=elastic-network
+        # Use the custom label "traefik.constraint-label=elastic-network"
         # This public Traefik will only use services with this label
         - traefik.constraint-label=${TRAEFIK_PUBLIC_TAG?Variable not set}
         # traefik-http set up only to use the middleware to redirect to https
@@ -97,7 +96,6 @@ services:
       - network.host=0.0.0.0
     networks:
       - elastic
-      - traefik-public
       - elastic-network
     ports:
       - "9200:9200"
@@ -117,7 +115,6 @@ services:
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
       - elastic
-      - traefik-public
       - elastic-network
     deploy:
       replicas: 1
@@ -130,8 +127,8 @@ services:
         # - "traefik.docker.network=elastic"
 
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.constraint-label=traefik-public
+        - traefik.docker.network=elastic-network
+        - traefik.constraint-label=elastic-network
         - traefik.http.routers.swarmpit-http.rule=Host:${DOMAIN?Variable not set};Path:/logstash
         - traefik.http.routers.swarmpit-http.entrypoints=http
         - traefik.http.routers.swarmpit-http.middlewares=https-redirect
@@ -168,8 +165,8 @@ services:
         # - "traefik.docker.network=elastic"
 
         - traefik.enable=true
-        - traefik.docker.network=traefik-public
-        - traefik.constraint-label=traefik-public
+        - traefik.docker.network=elastic-network
+        - traefik.constraint-label=elastic-network
         - traefik.http.routers.swarmpit-http.rule=Host(`nimdagp.${DOMAIN?Variable not set}`)
         - traefik.http.routers.swarmpit-http.entrypoints=http
         - traefik.http.routers.swarmpit-http.middlewares=https-redirect
