@@ -27,7 +27,7 @@ services:
     networks:
       - traefik-public
       - elastic-network
-    ports:
+    # ports:
       # - "80:80"
       # - "443:443"
       # - "8080:8080"
