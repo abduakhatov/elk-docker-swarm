@@ -2,85 +2,6 @@ version: "3.7"
 
 services:
 
-  traefik:
-    image: traefik:v2.2
-    hostname: "{{.Node.Hostname}}-traefik"
-    command:
-      - --providers.docker
-      - --providers.docker.constraints=Label(`traefik.constraint-label-stack`, `${TRAEFIK_TAG?Variable not set}`)
-      - --providers.docker.exposedbydefault=false
-      - --providers.docker.swarmmode
-      - --accesslog
-      - --log
-      - --api
-      # - --docker
-      # - --docker.swarmmode
-      # - --docker.domain=${DOMAIN}
-      # - --docker.watch" 
-      # - --logLevel=DEBUG
-      # - --docker.network=elastic
-      # - --api
-      # - --entrypoints=Name:http Address::80
-      # - --defaultentrypoints=http
-      # - --docker.exposedbydefault=false
-      # - --accessLog
-    networks:
-      - elastic-network
-#    ports:
-      # - "80:80"
-      # - "443:443"
-      # - "8080:8080"
-    volumes:
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - "node.role == manager"
-      labels: 
-        # Enable Traefik for this service, to make it available in the public network
-        - traefik.enable=true
-        # Use the elastic-network network (declared below)
-        - traefik.docker.network=elastic-network
-        # Use the custom label "traefik.constraint-label=elastic-network"
-        # This public Traefik will only use services with this label
-        - traefik.constraint-label=${TRAEFIK_PUBLIC_TAG?Variable not set}
-        # traefik-http set up only to use the middleware to redirect to https
-        - traefik.http.middlewares.${STACK_NAME?Variable not set}-https-redirect.redirectscheme.scheme=https
-        - traefik.http.middlewares.${STACK_NAME?Variable not set}-https-redirect.redirectscheme.permanent=true
-        # Handle host with and without "www" to redirect to only one of them
-        # Uses environment variable DOMAIN
-        # To disable www redirection remove the Host() you want to discard, here and
-        # below for HTTPS
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.rule=Host(`${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.entrypoints=http
-        # traefik-https the actual router using HTTPS
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-https.rule=Host(`${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-https.entrypoints=https
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-https.tls=true
-        # Use the "le" (Let's Encrypt) resolver created below
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-https.tls.certresolver=le
-        # Define the port inside of the Docker service to use
-        - traefik.http.services.${STACK_NAME?Variable not set}-proxy.loadbalancer.server.port=80
-        # Handle domain with and without "www" to redirect to only one
-        # To disable www redirection remove the next line
-        - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.regex=^https?://(www.)?(${DOMAIN?Variable not set})/(.*)
-        # Redirect a domain with www to non-www
-        # To disable it remove the next line
-        - traefik.http.middlewares.${STACK_NAME?Variable not set}-www-redirect.redirectregex.replacement=https://${DOMAIN?Variable not set}/$${3}
-        # Redirect a domain without www to www
-        # To enable it remove the previous line and uncomment the next
-        # - traefik.http.middlewares.${STACK_NAME}-www-redirect.redirectregex.replacement=https://www.${DOMAIN}/$${3}
-        # Middleware to redirect www, to disable it remove the next line 
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-https.middlewares=${STACK_NAME?Variable not set}-www-redirect
-        # Middleware to redirect www, and redirect HTTP to HTTPS
-        # to disable www redirection remove the section: ${STACK_NAME?Variable not set}-www-redirect,
-        - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.middlewares=${STACK_NAME?Variable not set}-www-redirect,${STACK_NAME?Variable not set}-https-redirect
-
-
-
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-elasticsearch"
@@ -96,15 +17,12 @@ services:
       - network.host=0.0.0.0
     networks:
       - elastic
-      - elastic-network
     ports:
       - "9200:9200"
-      - "9300:9300"
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
     deploy:
-      replicas: 1
-
+      mode: 'global'
 
   logstash:
     image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
@@ -115,29 +33,12 @@ services:
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
       - elastic
-      - elastic-network
     deploy:
-      replicas: 1
+      replicas: 2
       labels:
-        - "traefik.port=5044"
-        # - "traefik.frontend.rule=Host:${DOMAIN?Variable not set};Path:/logstash"
-        - "traefik.backend.loadbalancer.stickiness=true"
-        - "traefik.backend=logstash"
-        # - "traefik.enable=true"
-        # - "traefik.docker.network=elastic"
-
-        - traefik.enable=true
-        - traefik.docker.network=elastic-network
-        - traefik.constraint-label=elastic-network
-        - traefik.http.routers.swarmpit-http.rule=Host:${DOMAIN?Variable not set};Path:/logstash
-        - traefik.http.routers.swarmpit-http.entrypoints=http
-        - traefik.http.routers.swarmpit-http.middlewares=https-redirect
-        - traefik.http.routers.swarmpit-https.rule=Host:${DOMAIN?Variable not set};Path:/logstash
-        - traefik.http.routers.swarmpit-https.entrypoints=https
-        - traefik.http.routers.swarmpit-https.tls=true
-        - traefik.http.routers.swarmpit-https.tls.certresolver=le
-        - traefik.http.services.swarmpit.loadbalancer.server.port=8080
-
+        - 'traefik.port=5044'
+        - 'traefik.frontend.rule=Host:192.227.93.136;Path:/logstash'
+        - 'traefik.backend.loadbalancer.stickiness=true'
     configs:
       - source: ls_config
         target: /usr/share/logstash/pipeline/logstash.conf
@@ -157,31 +58,28 @@ services:
     deploy:
       replicas: 2
       labels:
-        - "traefik.port=5601"
-        # - "traefik.frontend.rule=Host:${DOMAIN}"
-        - "traefik.backend.loadbalancer.stickiness=true"
-        - "traefik.backend=kibana"
-        # - "traefik.enable=true"
-        # - "traefik.docker.network=elastic"
+        - 'traefik.port=5601'
+        - 'traefik.frontend.rule=Host:192.227.93.136'
+        - 'traefik.backend.loadbalancer.stickiness=true'
 
-        - traefik.enable=true
-        - traefik.docker.network=elastic-network
-        - traefik.constraint-label=elastic-network
-        - traefik.http.routers.swarmpit-http.rule=Host(`nimdagp.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.swarmpit-http.entrypoints=http
-        - traefik.http.routers.swarmpit-http.middlewares=https-redirect
-        - traefik.http.routers.swarmpit-https.rule=Host(`nimdagp.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.swarmpit-https.entrypoints=https
-        - traefik.http.routers.swarmpit-https.tls=true
-        - traefik.http.routers.swarmpit-https.tls.certresolver=le
-        - traefik.http.services.swarmpit.loadbalancer.server.port=8080
-
+  traefik:
+    image: traefik:v1.7.8
+    hostname: "{{.Node.Hostname}}-traefik"
+    command: --docker --docker.swarmmode --docker.domain=192.227.93.136 --docker.watch --logLevel=DEBUG --web
+    networks:
+      - elastic
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
 
 networks:
     elastic:
       external: true
-    elastic-network:
-      driver: overlay
 
 volumes:
   elasticsearch:
