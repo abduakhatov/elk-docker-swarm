@@ -84,7 +84,7 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls.certresolver=le
         - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5601
 
-        - "traefik.port=5601"
+        # - "traefik.port=5601"
         - "traefik.backend.loadbalancer.stickiness=true"
         - "traefik.backend=kibana"
 
