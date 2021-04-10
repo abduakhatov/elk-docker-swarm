@@ -6,8 +6,6 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-elasticsearch"
     command: >
-
-        # sysctl -w vm.max_map_count=262144 && 
         echo vm.max_map_count=262144 >> /etc/sysctl.conf &&
         sysctl -p
     environment:
@@ -20,7 +18,8 @@ services:
       - node.name={{.Node.Hostname}}-elasticsearch
       - network.host=0.0.0.0
     networks:
-      - elastic
+      - traefik-public
+      - elastic-network
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -37,7 +36,8 @@ services:
       - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
-      - elastic
+      - traefik-public
+      - elastic-network
     deploy:
       replicas: 1
       labels:
@@ -46,7 +46,7 @@ services:
         - "traefik.backend.loadbalancer.stickiness=true"
         - "traefik.backend=logstash"
         - "traefik.enable=true"
-        - "traefik.docker.network=elastic"
+        - "traefik.docker.network=traefik-public"
     configs:
       - source: ls_config
         target: /usr/share/logstash/pipeline/logstash.conf
@@ -60,7 +60,8 @@ services:
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - SERVER_NAME="{{.Node.Hostname}}-kibana"
     networks:
-      - elastic
+      - traefik-public
+      - elastic-network
     volumes:
       - kibana:/usr/share/kibana/data
     deploy:
@@ -71,7 +72,7 @@ services:
         - "traefik.backend.loadbalancer.stickiness=true"
         - "traefik.backend=kibana"
         - "traefik.enable=true"
-        - "traefik.docker.network=elastic"
+        - "traefik.docker.network=traefik-public"
 
   traefik:
     image: traefik:v1.7.8
@@ -84,12 +85,14 @@ services:
       - "--logLevel=DEBUG"
       - "--docker.network=elastic"
       - "--api"
+      - "--log"
       - "--entrypoints=Name:http Address::80"
       - "--defaultentrypoints=http"
       - "--docker.exposedbydefault=false"
       - "--accessLog"
     networks:
-      - elastic
+      - traefik-public
+      - elastic-network
     ports:
       - "80:80"
       - "443:443"
@@ -105,8 +108,11 @@ services:
           - "node.role == manager"
 
 networks:
-    elastic:
+    traefik-public:
       external: true
+    elastic-network:
+        driver: overlay
+    
 
 volumes:
   elasticsearch:
