@@ -11,7 +11,7 @@ services:
     #     sh -c echo vm.max_map_count=262144 >> /etc/sysctl.conf &&
     #     sh -c sysctl -p
     environment:
-      - "ES_JAVA_OPTS: '-Xms256m -Xmx256m'"
+      - "ES_JAVA_OPTS: '-Xmx1024m -Xmx1024m'"
       - discovery.zen.ping.unicast.hosts=elasticsearch
       - discovery.zen.minimum_master_nodes=3
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
