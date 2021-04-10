@@ -47,7 +47,7 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.entrypoints=https
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls=true
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls.certresolver=le
-        - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5050
+        - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5044
 
         - "traefik.port=5044"
         # - "traefik.frontend.rule=Host:${DOMAIN};Path:/logstash"
@@ -82,8 +82,7 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.entrypoints=https
         - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls=true
         - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls.certresolver=le
-        - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5050
-        - traefik.http.services.${STACK_NAME?Variable not set}-kibana.port=5601
+        - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5601
 
         - "traefik.port=5601"
         - "traefik.backend.loadbalancer.stickiness=true"
