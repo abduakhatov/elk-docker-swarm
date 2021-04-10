@@ -13,7 +13,7 @@ services:
     environment:
       - "ES_JAVA_OPTS: '-Xms256m -Xmx256m'"
       - discovery.zen.ping.unicast.hosts=elasticsearch
-      - discovery.zen.minimum_master_nodes=3
+      - discovery.zen.minimum_master_nodes=1
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
