@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export TRAEFIK_TAG=monitor.safed.ml
-export STACK_NAME=safed
+export TRAEFIK_TAG=elastic
+export STACK_NAME=elastic
 export DOMAIN=localhost
 export TRAEFIK_PUBLIC_NETWORK=traefik-public
 export TRAEFIK_PUBLIC_TAG=traefik-public
