@@ -4,6 +4,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
+    hostname: "{{.Node.Hostname}}-elasticsearch"
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
@@ -12,6 +13,7 @@ services:
       - xpack.license.self_generated.type=trial
       - cluster.name=DevOps
       - network.host=0.0.0.0
+      - node.name={{.Node.Hostname}}-elasticsearch
     networks:
       - elastic-network
     ports:
@@ -24,6 +26,7 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
+    hostname: "{{.Node.Hostname}}-logstash"
     environment:
       - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
       - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
@@ -45,6 +48,11 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls=true
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls.certresolver=le
         - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5050
+
+        - "traefik.port=5044"
+        # - "traefik.frontend.rule=Host:${DOMAIN};Path:/logstash"
+        - "traefik.backend.loadbalancer.stickiness=true"
+        - "traefik.backend=logstash"
     configs:
       - source: ls_config
         target: /usr/share/logstash/pipeline/logstash.conf
@@ -55,6 +63,7 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - SERVER_NAME="{{.Node.Hostname}}-kibana"
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic-network
@@ -75,8 +84,13 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls.certresolver=le
         - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5050
 
+        - "traefik.port=5601"
+        - "traefik.backend.loadbalancer.stickiness=true"
+        - "traefik.backend=kibana"
+
   proxy:
     image: traefik:v2.2
+    hostname: "{{.Node.Hostname}}-traefik"
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic-network
