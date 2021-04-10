@@ -1,11 +1,13 @@
 #!/bin/bash
-export TRAEFIK_TAG=elastic
-export STACK_NAME=elastic
+
 export DOMAIN=localhost
+export STACK_NAME=safed
 export TRAEFIK_PUBLIC_NETWORK=traefik-public
+export TRAEFIK_TAG=safed.ml
 export TRAEFIK_PUBLIC_TAG=traefik-public
-export DEFAULT_NETWORK=elastic_network
+export DEFAULT_NETWORK=elastic-default-network
 export DEFAULT_NETWORK_TYPE=bridge
+
 export ELASTICSEARCH_USERNAME=elastic
 export ELASTICSEARCH_PASSWORD=changeme
 export ELASTIC_VERSION=6.6.0
