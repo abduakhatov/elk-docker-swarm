@@ -18,6 +18,6 @@
 set -e
 
 
-# envsubst < logstash.conf.default > logstash.conf
+envsubst < logstash.conf.default > logstash.conf
 docker-compose --env-file .env -f docker-compose.yml config > docker-stack.yml;
 docker stack deploy -c docker-stack.yml elastic
