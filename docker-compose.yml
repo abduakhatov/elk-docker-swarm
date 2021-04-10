@@ -56,7 +56,7 @@ services:
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
-    - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
+      - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic-network
     volumes:
       - kibana:/usr/share/kibana/data
