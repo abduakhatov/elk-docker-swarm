@@ -105,8 +105,8 @@ services:
           - --api
       deploy:
           placement:
-          constraints:
-              - node.role == manager
+            constraints:
+                - node.role == manager
           labels:
           # Enable Traefik for this service, to make it available in the public network
           - traefik.enable=true
