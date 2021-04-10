@@ -4,7 +4,7 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
-    hostname: "{{.Node.Hostname}}-elasticsearch"
+    # hostname: "{{.Node.Hostname}}-elasticsearch"
     # command: >
     #     echo vm.max_map_count=262144 >> /etc/sysctl.conf &&
     #     sysctl -p
@@ -15,7 +15,7 @@ services:
       - xpack.monitoring.collection.enabled=true
       - xpack.license.self_generated.type=trial
       - cluster.name=DevOps
-      - node.name={{.Node.Hostname}}-elasticsearch
+    #   - node.name={{.Node.Hostname}}-elasticsearch
       - network.host=0.0.0.0
     networks:
       - elastic-network
@@ -29,7 +29,7 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
-    hostname: "{{.Node.Hostname}}-logstash"
+    # hostname: "{{.Node.Hostname}}-logstash"
     environment:
       - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
       - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
@@ -67,12 +67,12 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-6.5.0}
-    hostname: "{{.Node.Hostname}}-kibana"
+    # hostname: "{{.Node.Hostname}}-kibana"
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-      - SERVER_NAME="{{.Node.Hostname}}-kibana"
+    #   - SERVER_NAME="{{.Node.Hostname}}-kibana"
     networks:
     - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic-network
