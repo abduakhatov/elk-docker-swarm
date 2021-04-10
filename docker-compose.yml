@@ -150,11 +150,10 @@ services:
     
 
 networks:
-    traefik-public:
-      external: true
-    elastic-network:
-      driver: overlay
-    
+  traefik-public:
+    external: true
+  elastic-network:
+    driver: overlay
 
 volumes:
   elasticsearch:
