@@ -50,14 +50,14 @@ services:
         - traefik.enable=true
         - traefik.docker.network=${TRAEFIK_PUBLIC_NETWORK?Variable not set}
         - traefik.constraint-label=${TRAEFIK_PUBLIC_TAG?Variable not set}
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.rule=Host(`unsee.${DOMAIN?Variable not set}/logstash`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.entrypoints=http
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.rule=Host(`unsee.${DOMAIN?Variable not set}/logstash`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.entrypoints=https
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.tls=true
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.tls.certresolver=le
-        - traefik.http.services.${STACK_NAME?Variable not set}-pgadmin.loadbalancer.server.port=5050
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=Host(`unsee.${DOMAIN?Variable not set}/logstash`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.entrypoints=http
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.rule=Host(`unsee.${DOMAIN?Variable not set}/logstash`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.entrypoints=https
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls=true
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls.certresolver=le
+        - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5050
 
 
 
@@ -67,12 +67,10 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-6.5.0}
-    # hostname: "{{.Node.Hostname}}-kibana"
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-    #   - SERVER_NAME="{{.Node.Hostname}}-kibana"
     networks:
     - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic-network
@@ -81,22 +79,17 @@ services:
     deploy:
       replicas: 1
       labels:
-        # - "traefik.port=5601"
-        # - "traefik.frontend.rule=Host:${DOMAIN}"
-        # - "traefik.backend.loadbalancer.stickiness=true"
-        # - "traefik.backend=kibana"
-
         - traefik.enable=true
         - traefik.docker.network=${TRAEFIK_PUBLIC_NETWORK?Variable not set}
         - traefik.constraint-label=${TRAEFIK_PUBLIC_TAG?Variable not set}
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.rule=Host(`unsee.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.entrypoints=http
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.rule=Host(`unsee.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.entrypoints=https
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.tls=true
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.tls.certresolver=le
-        - traefik.http.services.${STACK_NAME?Variable not set}-pgadmin.loadbalancer.server.port=5050
+        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.rule=Host(`unsee.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.entrypoints=http
+        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
+        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.rule=Host(`unsee.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.entrypoints=https
+        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls=true
+        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls.certresolver=le
+        - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5050
 
 
 
