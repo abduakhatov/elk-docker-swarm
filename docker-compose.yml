@@ -5,9 +5,9 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-elasticsearch"
-    command: >
-        echo vm.max_map_count=262144 >> /etc/sysctl.conf &&
-        sysctl -p
+    # command: >
+    #     echo vm.max_map_count=262144 >> /etc/sysctl.conf &&
+    #     sysctl -p
     environment:
       - "ES_JAVA_OPTS: '-Xms256m -Xmx256m'"
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
