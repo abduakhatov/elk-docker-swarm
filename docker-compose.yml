@@ -66,7 +66,7 @@ services:
       - SERVER_NAME="{{.Node.Hostname}}-kibana"
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
-      - elastic-network
+      # - elastic-network
     volumes:
       - kibana:/usr/share/kibana/data
     deploy:
