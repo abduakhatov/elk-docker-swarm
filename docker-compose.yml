@@ -34,6 +34,8 @@ services:
       - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
       - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+    volumes: 
+      - $PWD/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     networks:
       - elastic
     deploy:
@@ -43,9 +45,9 @@ services:
         - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=PathPrefix(`/logstash`)
         - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5044
-    configs:
-      - source: ls_config
-        target: /usr/share/logstash/pipeline/logstash.conf
+    # configs:
+    #   - source: ls_config
+    #     target: /usr/share/logstash/pipeline/logstash.conf
 
 
 
