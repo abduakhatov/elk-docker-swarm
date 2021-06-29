@@ -27,28 +27,38 @@ services:
       replicas: 1
 
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
+    hostname: "{{.Node.Hostname}}-logstash"
+    environment:
+      - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+    networks:
+      - elastic
+    deploy:
+      replicas: 1
+      labels:
+        # - "traefik.port=5044"
+        # - "traefik.frontend.rule=Host:${DOMAIN};Path:/logstash"
+        # - "traefik.backend.loadbalancer.stickiness=true"
+        # - "traefik.backend=logstash"
+        # - "traefik.enable=true"
+        # - "traefik.docker.network=elastic"
+        # -------------
+        - traefik.enable=true
+        - traefik.docker.network=${TRAEFIK_PUBLIC_NETWORK?Variable not set}
+        - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.entrypoints=http
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.entrypoints=https
+        - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
 
-  # logstash:
-  #   image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
-  #   hostname: "{{.Node.Hostname}}-logstash"
-  #   environment:
-  #     - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
-  #     - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-  #     - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-  #   networks:
-  #     - elastic
-  #   deploy:
-  #     replicas: 2
-  #     labels:
-  #       - "traefik.port=5044"
-  #       - "traefik.frontend.rule=Host:${DOMAIN};Path:/logstash"
-  #       - "traefik.backend.loadbalancer.stickiness=true"
-  #       - "traefik.backend=logstash"
-  #       - "traefik.enable=true"
-  #       - "traefik.docker.network=elastic"
-  #   configs:
-  #     - source: ls_config
-  #       target: /usr/share/logstash/pipeline/logstash.conf
+    configs:
+      - source: ls_config
+        target: /usr/share/logstash/pipeline/logstash.conf
 
 
 
