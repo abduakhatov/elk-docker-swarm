@@ -85,16 +85,22 @@ services:
         # - "traefik.backend=kibana"
         # - "traefik.enable=true"
         # - "traefik.docker.network=elastic"
-        - traefik.docker.network=${TRAEFIK_PUBLIC_NETWORK?Variable not set}
-        - traefik.constraint-label=${TRAEFIK_PUBLIC_TAG?Variable not set}
-        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.rule=Host(`${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.entrypoints=http
-        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
-        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.rule=Host(`${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.entrypoints=https
-        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls=true
-        - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls.certresolver=le
-        - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5601
+        # - traefik.docker.network=${TRAEFIK_PUBLIC_NETWORK?Variable not set}
+        # - traefik.constraint-label=${TRAEFIK_PUBLIC_TAG?Variable not set}
+        # - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.rule=Host(`${DOMAIN?Variable not set}`)
+        # - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.entrypoints=http
+        # - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
+        # - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.rule=Host(`${DOMAIN?Variable not set}`)
+        # - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.entrypoints=https
+        # - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls=true
+        # - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-https.tls.certresolver=le
+        # - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5601
+
+
+        - traefik.enable=true
+        - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+        - traefik.http.routers.${STACK_NAME?Variable not set}-console-http.rule=PathPrefix(`/`)
+        - traefik.http.services.${STACK_NAME?Variable not set}-console.loadbalancer.server.port=5601
 
 
 
