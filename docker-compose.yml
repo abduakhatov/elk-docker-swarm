@@ -72,7 +72,6 @@ services:
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - SERVER_NAME="{{.Node.Hostname}}-kibana"
     networks:
-      - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
     volumes:
       - kibana:/usr/share/kibana/data
