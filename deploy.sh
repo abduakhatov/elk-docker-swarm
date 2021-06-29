@@ -5,6 +5,7 @@ docker network rm elastic
 docker network create -d overlay elastic
 
 # substitude env empty env var names
+export $(cat .env)
 envsubst < logstash.conf.default > logstash.conf
 
 # deploy
