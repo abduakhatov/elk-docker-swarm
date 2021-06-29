@@ -35,6 +35,7 @@ services:
       - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
+      - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
     deploy:
       replicas: 1
@@ -46,15 +47,16 @@ services:
         # - "traefik.enable=true"
         # - "traefik.docker.network=elastic"
         # -------------
-        - traefik.enable=true
         - traefik.docker.network=${TRAEFIK_PUBLIC_NETWORK?Variable not set}
-        - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=PathPrefix(`/logstash`)
+        - traefik.constraint-label=${TRAEFIK_PUBLIC_TAG?Variable not set}
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=Host(`${DOMAIN?Variable not set}/logstash`)
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.entrypoints=http
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
-        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.rule=PathPrefix(`/logstash`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.rule=Host(`${DOMAIN?Variable not set}/logstash`)
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.entrypoints=https
-        - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=80
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls=true
+        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-https.tls.certresolver=le
+        - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5044
 
     configs:
       - source: ls_config
@@ -192,7 +194,7 @@ services:
 networks:
     elastic:
       driver: ${DEFAULT_NETWORK_TYPE-overlay}
-    traefik-public:
+    ${TRAEFIK_PUBLIC_NETWORK?Variable not set}:
       external: true
 
 volumes:
