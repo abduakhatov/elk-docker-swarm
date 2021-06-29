@@ -2,28 +2,28 @@ version: "3.7"
 
 services:
 
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
-  #   hostname: "{{.Node.Hostname}}-elasticsearch"
-  #   environment:
-  #     - discovery.zen.ping.unicast.hosts=elasticsearch
-  #     - discovery.zen.minimum_master_nodes=3
-  #     - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-  #     - xpack.security.enabled=true
-  #     - xpack.monitoring.collection.enabled=true
-  #     - xpack.license.self_generated.type=trial
-  #     - cluster.name=DevOps
-  #     - node.name={{.Node.Hostname}}-elasticsearch
-  #     - network.host=0.0.0.0
-  #   networks:
-  #     - elastic
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   volumes:
-  #     - elasticsearch:/usr/share/elasticsearch/data
-  #   deploy:
-  #     replicas: 3
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
+    hostname: "{{.Node.Hostname}}-elasticsearch"
+    environment:
+      - discovery.zen.ping.unicast.hosts=elasticsearch
+      - discovery.zen.minimum_master_nodes=3
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - xpack.security.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - xpack.license.self_generated.type=trial
+      - cluster.name=DevOps
+      - node.name={{.Node.Hostname}}-elasticsearch
+      - network.host=0.0.0.0
+    networks:
+      - elastic
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    deploy:
+      replicas: 1
 
 
 
