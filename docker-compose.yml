@@ -161,7 +161,7 @@ services:
     #   - "--docker.exposedbydefault=false"
     #   - "--accessLog"
     # networks:
-      - elastic
+      # - elastic
     # ports:
     #   - "80:80"
     #   - "443:443"
