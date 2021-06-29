@@ -6,8 +6,9 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-elasticsearch"
     environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.zen.ping.unicast.hosts=elasticsearch
-      - discovery.zen.minimum_master_nodes=3
+      - discovery.zen.minimum_master_nodes=1
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
