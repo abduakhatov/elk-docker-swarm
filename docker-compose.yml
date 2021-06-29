@@ -193,7 +193,7 @@ services:
 networks:
     elastic:
       driver: ${DEFAULT_NETWORK_TYPE-overlay}
-    ${TRAEFIK_PUBLIC_NETWORK?Variable not set}:
+    traefik-public:
       external: true
 
 volumes:
