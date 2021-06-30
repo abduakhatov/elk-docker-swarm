@@ -17,6 +17,11 @@ services:
       - cluster.name=DevOps
       - node.name={{.Node.Hostname}}-elasticsearch
       - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     networks:
       - elastic
     ports:
@@ -35,11 +40,10 @@ services:
     image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-logstash"
     environment:
+      - xpack.monitoring.enabled=true
       - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
       - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-    # volumes: 
-    #   - $PWD/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     networks:
       - elastic
     deploy:
