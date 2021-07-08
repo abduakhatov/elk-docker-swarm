@@ -6,7 +6,14 @@ docker network create -d overlay elastic
 
 # substitude env empty env var names
 export $(cat .env)
-envsubst < logstash.conf.default > logstash.conf
+
+LOGSTAH_PIPE=logstash/pipeline
+LOGSTAH_CONF=logstash/config
+KIBANA_CONF=kibana/config
+
+envsubst < $LOGSTAH_PIPE/logstash.conf.default > $LOGSTAH_PIPE/logstash.conf
+envsubst < $LOGSTAH_CONF/logstash.yml.default > $LOGSTAH_CONF/logstash.yml
+envsubst < $KIBANA_CONF/kibana.yml > $KIBANA_CONF/kibana.yml
 
 # deploy
 docker-compose --env-file .env -f docker-compose.yml config > docker-stack.yml;

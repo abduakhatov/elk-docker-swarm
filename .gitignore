@@ -1,3 +1,6 @@
 docker-stack.yml
 .env
 logstash.conf
+logstash.yaml
+logstash.yml
+kibana.yml

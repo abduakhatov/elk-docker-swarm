@@ -7,17 +7,12 @@ services:
     hostname: "{{.Node.Hostname}}-elasticsearch"
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.zen.ping.unicast.hosts=elasticsearch
-      - discovery.zen.minimum_master_nodes=1
       - ELASTIC_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-      - xpack.security.enabled=true
-      - xpack.monitoring.collection.enabled=true
-      - xpack.license.self_generated.type=trial
-      - cluster.name=DevOps
       - node.name={{.Node.Hostname}}-elasticsearch
-      - network.host=0.0.0.0
-      - bootstrap.memory_lock=true
+    configs:
+      - source: elastic_config
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
     ulimits:
       memlock:
         soft: -1
@@ -39,11 +34,6 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-logstash"
-    environment:
-      - xpack.monitoring.enabled=true
-      - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
@@ -55,24 +45,26 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=PathPrefix(`/logstash`)
         - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5044
     configs:
-      - source: ls_config
+      - source: logstash_config
+        target: /usr/share/logstash/config/logstash.yml
+      - source: logstash_pipeline
         target: /usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
 
 
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-kibana"
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-      - SERVER_NAME="{{.Node.Hostname}}-kibana"
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
     volumes:
       - kibana:/usr/share/kibana/data
+    configs:
+      - source: kibana_config
+        target: /usr/share/kibana/config/kibana.yml
     deploy:
       replicas: 1
       labels:
@@ -163,5 +155,12 @@ volumes:
   kibana:
 
 configs:
-  ls_config:
-    file: $PWD/logstash.conf
+  elastic_config:
+    file: $PWD/elasticsearch/config/elasticsearch.yml
+  logstash_config:
+    file: $PWD/logstash/config/logstash.yml
+  logstash_pipeline:
+    file: $PWD/logstash/pipeline/logstash.conf
+  kibana_config:
+    file: $PWD/kibana/config/kibana.yml
+  
