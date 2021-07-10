@@ -4,3 +4,4 @@ logstash.conf
 logstash.yaml
 logstash.yml
 kibana.yml
+elasticsearch.yml

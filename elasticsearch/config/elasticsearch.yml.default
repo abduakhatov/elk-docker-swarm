@@ -2,8 +2,8 @@
 ## Default Elasticsearch configuration from Elasticsearch base image.
 ## https://github.com/elastic/elasticsearch/blob/master/distribution/docker/src/docker/config/elasticsearch.yml
 #
-cluster.name: default-clister
-node.name: elastic-node
+cluster.name: ${ELASTIC_CLUSTER_NAME}
+node.name: ${ELASTIC_NODE_NAME}
 network.host: 0.0.0.0
 bootstrap.memory_lock: true
 
