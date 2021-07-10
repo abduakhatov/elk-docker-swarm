@@ -35,28 +35,42 @@ services:
         constraints:
           - node.labels.elasticsearch == true
 
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
-    hostname: "{{.Node.Hostname}}-logstash"
-    environment:
-      - xpack.monitoring.enabled=true
-      - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION:-6.5.0}
+    hostname: "{{.Node.Hostname}}-filebeat"
+    user: root
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
-    deploy:
-      replicas: 1
-      labels:
-        - traefik.enable=true
-        - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
-        - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=PathPrefix(`/logstash`)
-        - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5044
+    volumes:
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     configs:
-      - source: ls_config
-        target: /usr/share/logstash/pipeline/logstash.conf
+      - source: filebeat_monitor
+        target: /usr/share/filebeat/filebeat.yml
+
+
+  # logstash:
+  #   image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
+  #   hostname: "{{.Node.Hostname}}-logstash"
+  #   environment:
+  #     - xpack.monitoring.enabled=true
+  #     - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
+  #     - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+  #     - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+  #   networks:
+  #     - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
+  #     - elastic
+  #   deploy:
+  #     replicas: 1
+  #     labels:
+  #       - traefik.enable=true
+  #       - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
+  #       - traefik.http.routers.${STACK_NAME?Variable not set}-logstash-http.rule=PathPrefix(`/logstash`)
+  #       - traefik.http.services.${STACK_NAME?Variable not set}-logstash.loadbalancer.server.port=5044
+  #   configs:
+  #     - source: ls_config
+  #       target: /usr/share/logstash/pipeline/logstash.conf
 
 
   kibana:
@@ -163,3 +177,5 @@ volumes:
 configs:
   ls_config:
     file: $PWD/logstash.conf
+  filebeat_monitor:
+    file: $PWD/filebeat/monitor/filebeat.yml
