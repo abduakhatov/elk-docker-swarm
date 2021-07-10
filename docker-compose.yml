@@ -59,7 +59,6 @@ services:
         target: /usr/share/logstash/pipeline/logstash.conf
 
 
-
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-kibana"
@@ -80,7 +79,6 @@ services:
         - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
         - traefik.http.routers.${STACK_NAME?Variable not set}-kibana-http.rule=PathPrefix(`/`)
         - traefik.http.services.${STACK_NAME?Variable not set}-kibana.loadbalancer.server.port=5601
-
 
 
   proxy:
