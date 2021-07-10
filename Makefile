@@ -1,7 +1,7 @@
 .DEFAULT_GOAL:=help
 
 # ---------------------
-destroy: 
+destroy: 	## 
 	./scripts/destroy.sh
 
 deploy:		## Deploy stack
