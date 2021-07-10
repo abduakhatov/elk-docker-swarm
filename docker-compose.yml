@@ -34,6 +34,11 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-logstash"
+    environment:
+      - xpack.monitoring.enabled=true
+      - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
@@ -50,8 +55,8 @@ services:
     configs:
       - source: logstash_config
         target: /usr/share/logstash/config/logstash.yml
-      - source: logstash_pipeline
-        target: /usr/share/logstash/pipeline/logstash.conf
+      # - source: logstash_pipeline
+      #   target: /usr/share/logstash/pipeline/logstash.conf
     depends_on:
       - elasticsearch
 
