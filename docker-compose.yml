@@ -82,6 +82,9 @@ services:
         tag: "kibana"
     deploy:
       replicas: 1
+      placement:
+        constraints:
+          - node.labels.kibana == true
       labels:
         - traefik.enable=true
         - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
