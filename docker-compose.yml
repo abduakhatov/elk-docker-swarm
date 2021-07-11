@@ -72,6 +72,11 @@ services:
       - elastic
     volumes:
       - kibana:/usr/share/kibana/data
+    logging:
+      driver: gelf
+      options:
+        gelf-address: ${GELF_URI?Variable not set}
+        tag: "kibana"
     deploy:
       replicas: 1
       labels:

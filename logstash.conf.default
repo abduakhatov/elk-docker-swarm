@@ -2,6 +2,10 @@ input {
   http {
     port => 5044
   }
+  
+  gelf {
+    port => 12201
+  }
 }
 
 filter {}
@@ -11,5 +15,6 @@ output {
     hosts => ["elasticsearch:9200"]
     user => "${ELASTICSEARCH_USERNAME}"
     password => "${ELASTICSEARCH_PASSWORD}"
+    index => "logstash-%{+YYYY-MM-dd}"
   }
 }
