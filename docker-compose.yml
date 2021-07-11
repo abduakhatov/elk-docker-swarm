@@ -47,6 +47,8 @@ services:
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
+    ports:
+      - 12201:12201/udp
     deploy:
       replicas: 1
       placement:
@@ -73,8 +75,6 @@ services:
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
-    ports:
-      - 12201:12201/udp
     volumes:
       - kibana:/usr/share/kibana/data
     logging:
