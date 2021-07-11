@@ -49,10 +49,11 @@ services:
       - source: filebeat_monitor
         target: /usr/share/filebeat/filebeat.yml
     deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.filebeat == true
+      mode: global
+      # replicas: 1
+      # placement:
+      #   constraints:
+      #     - node.labels.filebeat == true
 
 
   # logstash:
