@@ -29,11 +29,6 @@ services:
       - "9300:9300"
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "400m"
-        max-file: "10"
     deploy:
       replicas: 1
       placement:
@@ -53,11 +48,6 @@ services:
     configs:
       - source: filebeat_monitor
         target: /usr/share/filebeat/filebeat.yml
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "400m"
-        max-file: "10"
     deploy:
       mode: global
       # replicas: 1
@@ -102,11 +92,6 @@ services:
       - elastic
     volumes:
       - kibana:/usr/share/kibana/data
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "100m"
-        max-file: "10"
     deploy:
       replicas: 1
       labels:
@@ -126,11 +111,6 @@ services:
       - elastic
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "100m"
-        max-file: "10"
     command:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
