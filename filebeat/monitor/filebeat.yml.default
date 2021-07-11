@@ -1,6 +1,6 @@
 filebeat.inputs:
   - type: container
-    paths: "/var/lib/docker/containers/*/*.log"
+    paths: "/var/lib/docker/containers/${data.docker.container.id}/*.log"
 
 processors:
   - add_docker_metadata:
