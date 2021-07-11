@@ -51,10 +51,10 @@ services:
       - 12201:12201/udp
     deploy:
       mode: global
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.logstash == true
+      # replicas: 1
+      # placement:
+      #   constraints:
+      #     - node.labels.logstash == true
       labels:
         - traefik.enable=true
         - traefik.constraint-label-stack=${TRAEFIK_TAG?Variable not set}
