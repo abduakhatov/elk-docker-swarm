@@ -50,6 +50,7 @@ services:
     ports:
       - 12201:12201/udp
     deploy:
+      mode: global
       replicas: 1
       placement:
         constraints:
