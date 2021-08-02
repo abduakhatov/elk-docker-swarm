@@ -198,9 +198,9 @@ services:
       ELASTICSEARCH_URL: ELASTICSEARCH_URL
       ELASTICSEARCH_HTTP_AUTH: ${ELASTICSEARCH_USERNAME}:${ELASTICSEARCH_PASSWORD}
     volumes:
-      - ./curator/curator.yml:/root/.curator/curator.yml:ro
-      - ./curator/crontab:/etc/crontab:ro
-      - ./curator/actions/:/actions/:ro
+      - curator/curator.yml:/root/.curator/curator.yml:ro
+      - curator/crontab:/etc/crontab:ro
+      - curator/actions/:/actions/:ro
     networks:
       - elastic
     volumes:
