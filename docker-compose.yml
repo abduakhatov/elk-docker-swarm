@@ -190,7 +190,7 @@ services:
         - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.middlewares=${STACK_NAME?Variable not set}-www-redirect,${STACK_NAME?Variable not set}-https-redirect
 
   curator:
-    image: curator:elasticdocker-${ELK_VERSION?latest}
+    image: registry.track.uz/curator:elasticdocker-${ELK_VERSION?latest}
     build:
       context: curator/.
     restart: unless-stopped
@@ -201,6 +201,15 @@ services:
       - ./curator/curator.yml:/root/.curator/curator.yml:ro
       - ./curator/crontab:/etc/crontab:ro
       - ./curator/actions/:/actions/:ro
+    networks:
+      - elastic
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "400m"
+        max-file: "10"
     deploy:
       placement:
         constraints:
