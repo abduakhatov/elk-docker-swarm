@@ -31,7 +31,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "400m"
+        max-size: "100m"
         max-file: "10"
     deploy:
       replicas: 1
@@ -55,7 +55,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "400m"
+        max-size: "100m"
         max-file: "10"
     deploy:
       mode: global
