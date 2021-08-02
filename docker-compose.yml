@@ -199,12 +199,13 @@ services:
       ELASTICSEARCH_HTTP_AUTH: ${ELASTICSEARCH_USERNAME}:${ELASTICSEARCH_PASSWORD}
     volumes:
       - curator/curator.yml:/root/.curator/curator.yml:ro
-      - curator/crontab:/etc/crontab:ro
+      # - curator/crontab:/etc/crontab:ro
       - curator/actions/:/actions/:ro
     networks:
       - elastic
-    volumes:
-      - elasticsearch:/usr/share/elasticsearch/data
+    configs:
+      - source: curator_config
+        target: /etc/crontab
     logging:
       driver: "json-file"
       options:
@@ -230,3 +231,5 @@ configs:
     file: $PWD/logstash.conf
   filebeat_monitor:
     file: $PWD/filebeat/monitor/filebeat.yml
+  curator_config:
+    file: $PWD/curator/crontab
