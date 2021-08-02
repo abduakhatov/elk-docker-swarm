@@ -5,15 +5,15 @@
 # This are Environment Variables INSIDE the container, and should be set by the Docker-Compose File
 client:
   hosts:
-    - http://elasticsearch
-  username: elastic
-  password: s5qZ08HS5sYP55xArsx9mEZKAVLXSBwu
-  port: 9200
+    - ${ELASTICSEARCH_HOST}
+  username: ${ELASTICSEARCH_USERNAME}
+  password: ${ELASTICSEARCH_PASSWORD}
+  port: ${ELASTICSEARCH_PORT}
   use_ssl: False
   ssl_no_validate: False
   timeout: 30
   master_only: False
 
 logging:
-  loglevel: DEBUG
+  loglevel: ${CURATOR_LOG_LEVEL}
   logformat: default

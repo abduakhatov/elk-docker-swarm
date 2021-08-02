@@ -2,3 +2,4 @@ docker-stack.yml
 .env
 logstash.conf
 filebeat.yml
+curator.yml

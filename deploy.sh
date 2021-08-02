@@ -7,10 +7,8 @@ docker network create -d overlay elastic
 # substitude env empty env var names
 export $(cat .env)
 
-FILEBEAT_MONIT=filebeat/monitor
-
-envsubst < logstash.conf.default > logstash.conf
-envsubst < $FILEBEAT_MONIT/filebeat.yml.default > $FILEBEAT_MONIT/filebeat.yml
+# Envs subsitution
+sh ./scripts/envsubst.sh
 
 # build and push to registry
 sh ./scripts/build-push.sh
