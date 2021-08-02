@@ -1,7 +1,6 @@
 version: "3.7"
 
 services:
-
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-elasticsearch"
@@ -65,7 +64,6 @@ services:
       #   constraints:
       #     - node.labels.filebeat == true
 
-
   # logstash:
   #   image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-6.5.0}
   #   hostname: "{{.Node.Hostname}}-logstash"
@@ -87,7 +85,6 @@ services:
   #   configs:
   #     - source: ls_config
   #       target: /usr/share/logstash/pipeline/logstash.conf
-
 
   kibana:
     image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-6.5.0}
@@ -186,17 +183,34 @@ services:
         # Redirect a domain without www to www
         # To enable it remove the previous line and uncomment the next
         # - traefik.http.middlewares.${STACK_NAME}-www-redirect.redirectregex.replacement=https://www.${DOMAIN}/$${3}
-        # Middleware to redirect www, to disable it remove the next line 
+        # Middleware to redirect www, to disable it remove the next line
         - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-https.middlewares=${STACK_NAME?Variable not set}-www-redirect
         # Middleware to redirect www, and redirect HTTP to HTTPS
         # to disable www redirection remove the section: ${STACK_NAME?Variable not set}-www-redirect,
         - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.middlewares=${STACK_NAME?Variable not set}-www-redirect,${STACK_NAME?Variable not set}-https-redirect
 
+  curator:
+    image: curator:elasticdocker-${ELK_VERSION?latest}
+    build:
+      context: tools/curator/.
+    restart: unless-stopped
+    environment:
+      ELASTICSEARCH_HOST_PORT: ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}
+      ELASTICSEARCH_HTTP_AUTH: ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}
+    volumes:
+      - ./tools/curator/curator.yml:/root/.curator/curator.yml:ro
+      - ./tools/curator/crontab:/etc/crontab:ro
+      - ./tools/curator/actions/:/actions/:ro
+    deploy:
+      placement:
+        constraints:
+          - node.labels.curator == true
+
 networks:
-    elastic:
-      driver: ${DEFAULT_NETWORK_TYPE-overlay}
-    traefik-public:
-      external: true
+  elastic:
+    driver: ${DEFAULT_NETWORK_TYPE-overlay}
+  traefik-public:
+    external: true
 
 volumes:
   elasticsearch:
