@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-ARG CURATOR_VERSION=5.8.3
+ARG CURATOR_VERSION=5.8.4
 ENV CURATOR_VERSION=$CURATOR_VERSION
 
 RUN apk add --no-cache tini python py-pip                   \
