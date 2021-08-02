@@ -195,8 +195,8 @@ services:
       context: tools/curator/.
     restart: unless-stopped
     environment:
-      ELASTICSEARCH_HOST_PORT: ${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}
-      ELASTICSEARCH_HTTP_AUTH: ${ELASTIC_USERNAME}:${ELASTIC_PASSWORD}
+      ELASTICSEARCH_URL: ELASTICSEARCH_URL
+      ELASTICSEARCH_HTTP_AUTH: ${ELASTICSEARCH_USERNAME}:${ELASTICSEARCH_PASSWORD}
     volumes:
       - ./tools/curator/curator.yml:/root/.curator/curator.yml:ro
       - ./tools/curator/crontab:/etc/crontab:ro

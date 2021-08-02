@@ -5,7 +5,7 @@
 # This are Environment Variables INSIDE the container, and should be set by the Docker-Compose File
 client:
   hosts:
-    - ${ELASTICSEARCH_HOST_PORT}
+    - ${ELASTICSEARCH_URL?ELASTICSEARCH_URL not set}
   # NOTE: http_auth is now deprecated. Please use username and password instead.
   http_auth: ${ELASTICSEARCH_HTTP_AUTH}
   port: 9200
