@@ -9,11 +9,9 @@ services:
     volumes:
       - ./curator/curator.yml:/root/.curator/curator.yml:ro
       - ./curator/actions/:/actions/:ro
+      - ./curator/crontab:/etc/crontab:ro
     networks:
       - elastic
-    configs:
-      - source: curator_config
-        target: /etc/crontab
     logging:
       driver: "json-file"
       options:
@@ -29,7 +27,3 @@ networks:
     driver: ${DEFAULT_NETWORK_TYPE-overlay}
   traefik-public:
     external: true
-
-configs:
-  curator_config:
-    file: $PWD/curator/crontab
