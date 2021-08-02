@@ -6,8 +6,8 @@
 client:
   hosts:
     - http://elasticsearch
-  username: ${ELASTICSEARCH_USERNAME?ELASTICSEARCH_USERNAME not set}
-  password: ${ELASTICSEARCH_PASSWORD?ELASTICSEARCH_PASSWORD not set}
+  username: elastic
+  password: s5qZ08HS5sYP55xArsx9mEZKAVLXSBwu
   port: 9200
   use_ssl: False
   ssl_no_validate: False
