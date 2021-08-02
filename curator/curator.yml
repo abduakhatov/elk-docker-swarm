@@ -6,8 +6,8 @@
 client:
   hosts:
     - ${ELASTICSEARCH_URL?ELASTICSEARCH_URL not set}
-  username: ${ELASTICSEARCH_USERNAME}
-  password: ${ELASTICSEARCH_PASSWORD}
+  username: ${ELASTICSEARCH_USERNAME?ELASTICSEARCH_USERNAME not set}
+  password: ${ELASTICSEARCH_PASSWORD?ELASTICSEARCH_PASSWORD not set}
   port: 9200
   use_ssl: False
   ssl_no_validate: False
