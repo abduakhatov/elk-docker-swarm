@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  curator:
+    image: registry.track.uz/curator:elasticdocker-${ELK_VERSION?latest}
+    build:
+      context: curator/.
+    restart: unless-stopped
+    volumes:
+      - ./curator/curator.yml:/root/.curator/curator.yml:ro
+      - ./curator/actions/:/actions/:ro
+    networks:
+      - elastic
+    configs:
+      - source: curator_config
+        target: /etc/crontab
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    deploy:
+      placement:
+        constraints:
+          - node.labels.curator == true
+
+networks:
+  elastic:
+    driver: ${DEFAULT_NETWORK_TYPE-overlay}
+  traefik-public:
+    external: true
+
+
+configs:
+  curator_config:
+    file: $PWD/curator/crontab

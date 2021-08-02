@@ -189,29 +189,6 @@ services:
         # to disable www redirection remove the section: ${STACK_NAME?Variable not set}-www-redirect,
         - traefik.http.routers.${STACK_NAME?Variable not set}-proxy-http.middlewares=${STACK_NAME?Variable not set}-www-redirect,${STACK_NAME?Variable not set}-https-redirect
 
-  curator:
-    image: registry.track.uz/curator:elasticdocker-${ELK_VERSION?latest}
-    build:
-      context: curator/.
-    restart: unless-stopped
-    volumes:
-      - ./curator/curator.yml:/root/.curator/curator.yml:ro
-      - ./curator/actions/:/actions/:ro
-    networks:
-      - elastic
-    configs:
-      - source: curator_config
-        target: /etc/crontab
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "400m"
-        max-file: "10"
-    deploy:
-      placement:
-        constraints:
-          - node.labels.curator == true
-
 networks:
   elastic:
     driver: ${DEFAULT_NETWORK_TYPE-overlay}
@@ -227,5 +204,3 @@ configs:
     file: $PWD/logstash.conf
   filebeat_monitor:
     file: $PWD/filebeat/monitor/filebeat.yml
-  curator_config:
-    file: $PWD/curator/crontab
