@@ -5,7 +5,7 @@
 # This are Environment Variables INSIDE the container, and should be set by the Docker-Compose File
 client:
   hosts:
-    - ${ELASTICSEARCH_URL?ELASTICSEARCH_URL not set}
+    - http://elasticsearch
   username: ${ELASTICSEARCH_USERNAME?ELASTICSEARCH_USERNAME not set}
   password: ${ELASTICSEARCH_PASSWORD?ELASTICSEARCH_PASSWORD not set}
   port: 9200
