@@ -8,6 +8,8 @@ client:
     - ${ELASTICSEARCH_URL?ELASTICSEARCH_URL not set}
   # NOTE: http_auth is now deprecated. Please use username and password instead.
   http_auth: ${ELASTICSEARCH_HTTP_AUTH}
+  username: ${ELASTICSEARCH_USERNAME}
+  password: ${ELASTICSEARCH_PASSWORD}
   port: 9200
   use_ssl: False
   ssl_no_validate: False
