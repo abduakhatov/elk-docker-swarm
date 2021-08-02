@@ -30,7 +30,6 @@ networks:
   traefik-public:
     external: true
 
-
 configs:
   curator_config:
     file: $PWD/curator/crontab
