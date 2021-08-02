@@ -13,8 +13,8 @@ envsubst < logstash.conf.default > logstash.conf
 envsubst < $FILEBEAT_MONIT/filebeat.yml.default > $FILEBEAT_MONIT/filebeat.yml
 
 # build and push to registry
-sh ./scripts/build.sh
+sh ./scripts/build-push.sh
 
 # deploy
-docker-compose --env-file .env -f docker-compose.yml config > docker-stack.yml;
-docker stack deploy -c docker-stack.yml elastic
+# docker-compose --env-file .env -f docker-compose.yml config > docker-stack.yml;
+# docker stack deploy -c docker-stack.yml elastic
