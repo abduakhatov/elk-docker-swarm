@@ -40,7 +40,7 @@ services:
           - node.labels.elasticsearch == true
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:7.2.0
+    image: docker.elastic.co/beats/filebeat:${FILEBEAT_VERSION:-6.5.0}
     hostname: "{{.Node.Hostname}}-filebeat"
     user: root
     networks:

@@ -15,7 +15,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "50m"
+        max-size: "10m"
         max-file: "5"
     deploy:
       placement:
@@ -25,5 +25,3 @@ services:
 networks:
   elastic:
     driver: ${DEFAULT_NETWORK_TYPE-overlay}
-  traefik-public:
-    external: true
