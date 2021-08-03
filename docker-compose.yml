@@ -16,6 +16,7 @@ services:
       - xpack.license.self_generated.type=trial
       - cluster.name=DevOps
       - node.name={{.Node.Hostname}}-elasticsearch
+      - cluster.initial_master_nodes={{.Node.Hostname}}-elasticsearch
       - network.host=0.0.0.0
       - bootstrap.memory_lock=true
     ulimits:
