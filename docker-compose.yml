@@ -10,6 +10,7 @@ services:
       - discovery.zen.minimum_master_nodes=1
       - ELASTIC_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+      - ELASTIC_INIT_MASTER_NODE=${ELASTIC_INIT_MASTER_NODE?ELASTIC_INIT_MASTER_NODE not set}
       - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
       - xpack.license.self_generated.type=trial
