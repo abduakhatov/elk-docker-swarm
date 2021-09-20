@@ -45,11 +45,10 @@ actions:
       actionable list of indices (ignore_empty_list) and exit cleanly.
     options:
       ignore_empty_list: True
-      disable_action: False
     filters:
       - filtertype: pattern
-        kind: regex
-        value: "^.*beat-.*"
+        kind: prefix
+        value: filebeat-
       - filtertype: age
         source: name
         direction: older
