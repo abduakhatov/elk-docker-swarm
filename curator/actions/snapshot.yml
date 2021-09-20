@@ -54,4 +54,4 @@ actions:
         direction: older
         timestring: "%Y.%m.%d"
         unit: days
-        unit_count: 7
+        unit_count: 2
