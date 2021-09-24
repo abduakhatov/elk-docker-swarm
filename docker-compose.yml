@@ -15,8 +15,9 @@ services:
       - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
       - xpack.security.http.ssl.enabled=true
-      - cluster.name=DevOps
-      - node.name={{.Node.Hostname}}-elasticsearch
+      - xpack.security.audit.enabled=true
+      # - cluster.name=DevOps
+      # - node.name={{.Node.Hostname}}-elasticsearch
       # - cluster.initial_master_nodes={{.Node.Hostname}}-elasticsearch
       - network.host=0.0.0.0
       - bootstrap.memory_lock=true
