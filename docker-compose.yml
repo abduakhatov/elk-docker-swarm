@@ -12,6 +12,7 @@ services:
       - ELASTIC_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - ELASTIC_INIT_MASTER_NODE=${ELASTIC_INIT_MASTER_NODE?ELASTIC_INIT_MASTER_NODE not set}
+      - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
       - cluster.name=DevOps
       - node.name={{.Node.Hostname}}-elasticsearch
@@ -90,8 +91,6 @@ services:
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - SERVER_NAME="{{.Node.Hostname}}-kibana"
-      - elasticsearch.username=${ELASTICSEARCH_USERNAME:-elastic}
-      - elasticsearch.password=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
