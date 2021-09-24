@@ -11,7 +11,7 @@ services:
       - discovery.type=single-node
       - ELASTIC_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-      - ELASTIC_INIT_MASTER_NODE=${ELASTIC_INIT_MASTER_NODE?ELASTIC_INIT_MASTER_NODE not set}
+      # - ELASTIC_INIT_MASTER_NODE=${ELASTIC_INIT_MASTER_NODE?ELASTIC_INIT_MASTER_NODE not set}
       - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
       # - xpack.security.http.ssl.enabled=true
