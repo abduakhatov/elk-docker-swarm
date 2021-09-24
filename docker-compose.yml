@@ -46,7 +46,6 @@ services:
     hostname: "{{.Node.Hostname}}-filebeat"
     user: root
     networks:
-      - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
     volumes:
       - /var/lib/docker:/var/lib/docker:ro

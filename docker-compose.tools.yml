@@ -22,6 +22,25 @@ services:
         constraints:
           - node.labels.curator == true
 
+
+  # elastalert:
+  #   image: bitsensor/elastalert:latest
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./tools/elastalert/config/elastalert.yaml:/opt/config/config.yaml
+  #     - ./tools/elastalert/config/elastalert-test.yaml:/opt/config/config-test.yaml
+  #     - ./tools/elastalert/config/config.json:/opt/config/config.json
+  #     - ./tools/elastalert/rules:/opt/elastalert/rules
+  #     # - ./tools/elastalert/rule_templates:/opt/elastalert/rule_templates
+  #   environment:
+  #     ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST}
+  #     ELASTICSEARCH_PORT: ${ELASTICSEARCH_PORT}
+  #     ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+  #     ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+  #   ports:
+  #     - 3030:3030
+
+
 networks:
   elastic:
     driver: ${DEFAULT_NETWORK_TYPE-overlay}
