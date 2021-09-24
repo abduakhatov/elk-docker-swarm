@@ -1,0 +1,26 @@
+networks:
+  elastic:
+    driver: overlay
+services:
+  curator:
+    build:
+      context: /home/sa/tmp/elk/my-elk-docker-swarm/curator
+    deploy:
+      placement:
+        constraints:
+        - node.labels.curator == true
+    image: registry.track.uz/curator:elasticdocker-7.10.1
+    logging:
+      driver: json-file
+      options:
+        max-file: '5'
+        max-size: 10m
+    networks:
+      elastic: null
+    restart: unless-stopped
+    volumes:
+    - /home/sa/tmp/elk/my-elk-docker-swarm/curator/curator.yml:/root/.curator/curator.yml:ro
+    - /home/sa/tmp/elk/my-elk-docker-swarm/curator/actions:/actions:ro
+    - /home/sa/tmp/elk/my-elk-docker-swarm/curator/crontab:/etc/crontab:ro
+version: '3.7'
+
