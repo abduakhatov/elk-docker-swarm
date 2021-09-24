@@ -114,6 +114,39 @@ services:
         constraints:
           - node.labels.kibana == true
 
+  apm:
+    image: docker.elastic.co/apm/apm-server:${ELASTIC_VERSION:-6.5.0}
+    volumes: 
+      - apm:/usr/share/apm-server/data
+      # - ./apm/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+    environment:
+      - KIBANA_URL=http://kibana:5601
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+    ports:
+      - 8200:8200
+    config:
+      - source: apm_config
+        target: /usr/share/apm-server/apm-server.yml
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    depends_on:
+      - kibana
+      - elasticsearch
+    networks:
+      - elastic
+    healthcheck:
+      test: curl -s https://localhost:8200/healthcheck > /dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1;fi
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: --strict.perms=false -e
+
+
   proxy:
     image: traefik:v2.2
     hostname: "{{.Node.Hostname}}-traefik"
@@ -197,9 +230,12 @@ networks:
 volumes:
   elasticsearch:
   kibana:
+  apm:
 
 configs:
   ls_config:
     file: $PWD/logstash.conf
   filebeat_monitor:
     file: $PWD/filebeat/monitor/filebeat.yml
+  apm_config:
+    file: $PWD/apm/apm-server.yml
