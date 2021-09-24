@@ -90,6 +90,8 @@ services:
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       - SERVER_NAME="{{.Node.Hostname}}-kibana"
+      - elasticsearch.username=${ELASTICSEARCH_USERNAME:-elastic}
+      - elasticsearch.password=${ELASTICSEARCH_PASSWORD:-changeme}
     networks:
       - ${TRAEFIK_PUBLIC_NETWORK?Variable not set}
       - elastic
