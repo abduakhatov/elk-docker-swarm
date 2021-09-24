@@ -14,6 +14,7 @@ services:
       - ELASTIC_INIT_MASTER_NODE=${ELASTIC_INIT_MASTER_NODE?ELASTIC_INIT_MASTER_NODE not set}
       - xpack.security.enabled=true
       - xpack.monitoring.collection.enabled=true
+      xpack.security.http.ssl.enabled=true
       - cluster.name=DevOps
       - node.name={{.Node.Hostname}}-elasticsearch
       - cluster.initial_master_nodes={{.Node.Hostname}}-elasticsearch
