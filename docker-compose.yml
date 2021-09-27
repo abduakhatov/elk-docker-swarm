@@ -116,7 +116,7 @@ services:
 
   apm:
     image: docker.elastic.co/apm/apm-server:${ELASTIC_VERSION:-6.5.0}
-    volumes: 
+    volumes:
       - apm:/usr/share/apm-server/data
       # - ./apm/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
     environment:
@@ -126,7 +126,7 @@ services:
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
     ports:
       - 8200:8200
-    config:
+    configs:
       - source: apm_config
         target: /usr/share/apm-server/apm-server.yml
     logging:
@@ -149,7 +149,6 @@ services:
         constraints:
           - node.labels.apm == true
     command: --strict.perms=false -e
-
 
   proxy:
     image: traefik:v2.2
