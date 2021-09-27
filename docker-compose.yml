@@ -147,10 +147,8 @@ services:
         max-size: "50m"
         max-file: "5"
     depends_on:
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
+      - elasticsearch
+      - kibana
     networks:
       - elastic
     healthcheck:
