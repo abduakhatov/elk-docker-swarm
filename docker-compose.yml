@@ -124,6 +124,11 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
+
+      # - output.elasticsearch.enabled=true
+      - output.elasticsearch.hosts=http://elasticsearch:9200
+      - output.elasticsearch.username=${ELASTICSEARCH_USERNAME:-elastic}
+      - output.elasticsearch.password=${ELASTICSEARCH_PASSWORD:-changeme}
     ports:
       - 8200:8200
     configs:
