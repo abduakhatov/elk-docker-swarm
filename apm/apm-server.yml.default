@@ -275,8 +275,8 @@ apm-server:
     host: "localhost:5601"
     # Optional protocol and basic auth credentials.
     protocol: "http"
-    username: "${BEAT_KIBANA_USER:-apm_system}"
-    password: "${BEAT_KIBANA_PASS:-changeme}"
+    username: "${BEAT_KIBANA_USER}"
+    password: "${BEAT_KIBANA_PASS}"
   # Optional HTTP path.
   #path: ""
   # Enable custom SSL settings. Set to false to ignore custom SSL settings for secure communication.
@@ -510,8 +510,8 @@ output.elasticsearch:
   #protocol: "https"
   # Authentication credentials - either API key or username/password.
   #api_key: "id:api_key"
-  username: "${ELASTICSEARCH_USERNAME:-elastic}"
-  password: "${ELASTICSEARCH_PASSWORD:-changeme}"
+  username: "${ELASTICSEARCH_USERNAME}"
+  password: "${ELASTICSEARCH_PASSWORD}"
   # Dictionary of HTTP parameters to pass within the url with index operations.
   #parameters:
   #param1: value1

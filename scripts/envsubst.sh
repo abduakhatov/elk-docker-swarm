@@ -7,3 +7,4 @@ FILEBEAT_MONIT=filebeat/monitor
 envsubst < logstash.conf.default > logstash.conf
 envsubst < $FILEBEAT_MONIT/filebeat.yml.default > $FILEBEAT_MONIT/filebeat.yml
 envsubst < ./curator/curator.yml.default > ./curator/curator.yml
+envsubst < ./apm/apm-server.yml.default > ./apm/apm-server.yml
