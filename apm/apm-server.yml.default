@@ -272,9 +272,9 @@ apm-server:
     # Scheme and port can be left out and will be set to the default (`http` and `5601`).
     # In case you specify an additional path, the scheme is required: `http://localhost:5601/path`.
     # IPv6 addresses should always be defined as: `https://[2001:db8::1]:5601`.
-    host: "localhost:5601"
+    host: "${BEAT_KIBANA_HOST}"
     # Optional protocol and basic auth credentials.
-    protocol: "http"
+    protocol: "${BEAT_KIBANA_PROTOCOL}"
     username: "${BEAT_KIBANA_USER}"
     password: "${BEAT_KIBANA_PASS}"
   # Optional HTTP path.
