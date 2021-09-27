@@ -266,17 +266,17 @@ apm-server:
   # When using APM agent configuration, information fetched from Kibana will be cached in memory for some time.
   # Specify cache key expiration via this setting. Default is 30 seconds.
   #agent.config.cache.expiration: 30s
-  #kibana:
-  # For APM Agent configuration in Kibana, enabled must be true.
-  #enabled: false
-  # Scheme and port can be left out and will be set to the default (`http` and `5601`).
-  # In case you specify an additional path, the scheme is required: `http://localhost:5601/path`.
-  # IPv6 addresses should always be defined as: `https://[2001:db8::1]:5601`.
-  #host: "localhost:5601"
-  # Optional protocol and basic auth credentials.
-  #protocol: "https"
-  #username: "elastic"
-  #password: "changeme"
+  kibana:
+    # For APM Agent configuration in Kibana, enabled must be true.
+    enabled: true
+    # Scheme and port can be left out and will be set to the default (`http` and `5601`).
+    # In case you specify an additional path, the scheme is required: `http://localhost:5601/path`.
+    # IPv6 addresses should always be defined as: `https://[2001:db8::1]:5601`.
+    host: "localhost:5601"
+    # Optional protocol and basic auth credentials.
+    protocol: "http"
+    username: "${BEAT_KIBANA_USER:-apm_system}"
+    password: "${BEAT_KIBANA_PASS:-changeme}"
   # Optional HTTP path.
   #path: ""
   # Enable custom SSL settings. Set to false to ignore custom SSL settings for secure communication.
@@ -510,8 +510,8 @@ output.elasticsearch:
   #protocol: "https"
   # Authentication credentials - either API key or username/password.
   #api_key: "id:api_key"
-  #username: "elastic"
-  #password: "changeme"
+  username: "${ELASTICSEARCH_USERNAME:-elastic}"
+  password: "${ELASTICSEARCH_PASSWORD:-changeme}"
   # Dictionary of HTTP parameters to pass within the url with index operations.
   #parameters:
   #param1: value1
