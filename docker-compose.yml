@@ -60,6 +60,10 @@ services:
       options:
         max-size: "100m"
         max-file: "10"
+    healthcheck:
+      interval: 20s
+      retries: 10
+      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
     deploy:
       mode: global
 
@@ -103,6 +107,10 @@ services:
       options:
         max-size: "100m"
         max-file: "10"
+    healthcheck:
+      interval: 10s
+      retries: 20
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
     deploy:
       replicas: 1
       labels:
@@ -120,11 +128,10 @@ services:
       - apm:/usr/share/apm-server/data
       # - ./apm/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
     environment:
-      - KIBANA_URL=http://kibana:5601
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
-      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
-
+      # - KIBANA_URL=http://kibana:5601
+      # - ELASTICSEARCH_URL=http://elasticsearch:9200
+      # - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME:-elastic}
+      # - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD:-changeme}
       # - output.elasticsearch.enabled=true
       - output.elasticsearch.hosts=http://elasticsearch:9200
       - output.elasticsearch.username=${ELASTICSEARCH_USERNAME:-elastic}
@@ -140,20 +147,31 @@ services:
         max-size: "50m"
         max-file: "5"
     depends_on:
-      - kibana
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
     networks:
       - elastic
     healthcheck:
-      test: curl -s https://localhost:8200/healthcheck > /dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1;fi
-      interval: 30s
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+      interval: 10s
       timeout: 10s
       retries: 5
     deploy:
       placement:
         constraints:
           - node.labels.apm == true
-    command: --strict.perms=false -e
+    command: apm-server --strict.perms=false -e
+      -E apm-server.rum.enabled=true
+      -E setup.kibana.host=kibana:5601
+      -E setup.template.settings.index.number_of_replicas=0
+      -E apm-server.kibana.enabled=true
+      -E apm-server.kibana.host=kibana:5601
+      -E output.elasticsearch.hosts=["elasticsearch:9200"]
+      -E output.elasticsearch.hosts=http://elasticsearch:9200
+      -E output.elasticsearch.username=${ELASTICSEARCH_USERNAME:-elastic}
+      -E output.elasticsearch.password=${ELASTICSEARCH_PASSWORD:-changeme}
 
   proxy:
     image: traefik:v2.2
