@@ -107,10 +107,6 @@ services:
       options:
         max-size: "100m"
         max-file: "10"
-    healthcheck:
-      interval: 10s
-      retries: 20
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
     deploy:
       replicas: 1
       labels:
