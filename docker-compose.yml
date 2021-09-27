@@ -148,7 +148,7 @@ services:
     networks:
       - elastic
     healthcheck:
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+      test: curl -s https://localhost:8200/healthcheck > /dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1;fi
       interval: 10s
       timeout: 10s
       retries: 5
