@@ -37,6 +37,10 @@ services:
       options:
         max-size: "100m"
         max-file: "10"
+    healthcheck:
+      interval: 20s
+      retries: 10
+      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
     deploy:
       replicas: 1
       placement:
@@ -60,10 +64,6 @@ services:
       options:
         max-size: "100m"
         max-file: "10"
-    healthcheck:
-      interval: 20s
-      retries: 10
-      test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
     deploy:
       mode: global
 
